@@ -1,9 +1,3 @@
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.Queue;
-
 /**
  * Загальний клас BasicDataOperation координує роботу різних структур даних.
  * 
