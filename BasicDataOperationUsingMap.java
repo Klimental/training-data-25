@@ -119,7 +119,6 @@ public class BasicDataOperationUsingMap {
             if (other.woolLength == null) return -1;
             return other.woolLength.compareTo(this.woolLength);  // Інвертоване порівняння для спадання
         }
-
         /**
          * Перевіряє рівність цього Sheep з іншим об'єктом.
          * Два Sheep вважаються рівними, якщо їх клички (nickname) та види (woolLength) однакові.
@@ -229,7 +228,17 @@ public class BasicDataOperationUsingMap {
         findByKeyInHashMap();
         findByValueInHashMap();
 
+                // Пошук до сортування
+        findByKeyInHashMap();
+        findByValueInHashMap();
+
         printHashMap();
+        sortHashMap();
+        printHashMap();
+
+        // Пошук після сортування
+        findByKeyInHashMap();
+        findByValueInHashMap();
 
         addEntryToHashMap();
         
@@ -399,6 +408,27 @@ public class BasicDataOperationUsingMap {
 
         PerformanceTracker.displayOperationTime(timeStart, "виведення пар ключ-значення в HashMap");
     }
+
+        private void sortHashMap() {
+        long timeStart = System.nanoTime();
+
+        // Створюємо список ключів і сортуємо за природним порядком Sheep
+        List<Sheep> sortedKeys = new ArrayList<>(hashMap.keySet());
+        Collections.sort(sortedKeys);
+        
+        // Створюємо нову Hashtable з відсортованими ключами
+        HashMap<Sheep, String> sortedHashMap = new HashMap<>();
+        for (Sheep key : sortedKeys) {
+            sortedHashMap.put(key, hashMap.get(key));
+        }
+        
+        // Перезаписуємо оригінальну hashtable
+        hashMap = sortedHashMap;
+
+
+        PerformanceTracker.displayOperationTime(timeStart, "сортування Hashtable за ключами");
+    }
+
 
     /**
      * Здійснює пошук елемента за ключем в HashMap.
