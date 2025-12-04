@@ -446,7 +446,7 @@ public class BasicDataOperationUsingMap {
         hashMap = sortedHashMap;
 
 
-        PerformanceTracker.displayOperationTime(timeStart, "сортування Hashtable за ключами");
+        PerformanceTracker.displayOperationTime(timeStart, "сортування HashMap за ключами");
     }
 
     /**
