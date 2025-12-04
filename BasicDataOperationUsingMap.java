@@ -229,7 +229,17 @@ public class BasicDataOperationUsingMap {
         findByKeyInHashMap();
         findByValueInHashMap();
 
+                // Пошук до сортування
+        findByKeyInHashMap();
+        findByValueInHashMap();
+
         printHashMap();
+        sortHashMap();
+        printHashMap();
+
+        // Пошук після сортування
+        findByKeyInHashMap();
+        findByValueInHashMap();
 
         addEntryToHashMap();
         
@@ -417,6 +427,26 @@ public class BasicDataOperationUsingMap {
         } else {
             System.out.println("Елемент з ключем '" + KEY_TO_SEARCH_AND_DELETE + "' відсутній в HashMap.");
         }
+    }
+
+    private void sortHashMap() {
+        long timeStart = System.nanoTime();
+
+        // Створюємо список ключів і сортуємо за природним порядком Sheep
+        List<Sheep> sortedKeys = new ArrayList<>(hashMap.keySet());
+        Collections.sort(sortedKeys);
+        
+        // Створюємо нову Hashtable з відсортованими ключами
+        HashMap<Sheep, String> sortedHashMap = new HashMap<>();
+        for (Sheep key : sortedKeys) {
+            sortedHashMap.put(key, hashMap.get(key));
+        }
+        
+        // Перезаписуємо оригінальну hashtable
+        hashMap = sortedHashMap;
+
+
+        PerformanceTracker.displayOperationTime(timeStart, "сортування Hashtable за ключами");
     }
 
     /**
