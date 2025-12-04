@@ -119,10 +119,12 @@ public class BasicDataOperationUsingSet {
     /**
      * Здійснює пошук конкретного значення в множині дати та часу.
      */
+    // Оновлений метод пошуку значення в множині за допомогою Stream API
     private void findInSet() {
         long timeStart = System.nanoTime();
 
-        boolean elementExists = this.longSet.contains(longValueToSearch);
+        boolean elementExists = longSet.stream()
+                                    .anyMatch(longValue -> longValue.equals(longValueToSearch)); // Пошук за значенням
 
         PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в LinkedHashSet дати i часу");
 
@@ -132,6 +134,7 @@ public class BasicDataOperationUsingSet {
             System.out.println("Елемент '" + longValueToSearch + "' відсутній в LinkedHashSet.");
         }
     }
+
 
     /**
      * Визначає найменше та найбільше значення в множині long.
@@ -144,15 +147,19 @@ public class BasicDataOperationUsingSet {
 
         long timeStart = System.nanoTime();
 
-        long minValue = Collections.min(longSet);
-        long maxValue = Collections.max(longSet);
+        Long minValue = longSet.stream()
+                            .min(Long::compareTo)
+                            .orElse(null); // Пошук мінімального значення
+
+        Long maxValue = longSet.stream()
+                            .max(Long::compareTo)
+                            .orElse(null); // Пошук максимального значення
 
         PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмальної i максимальної дати в LinkedHashSet");
 
         System.out.println("Найменше значення в LinkedHashSet: " + minValue);
         System.out.println("Найбільше значення в LinkedHashSet: " + maxValue);
     }
-
     /**
      * Аналізує та порівнює елементи масиву та множини.
      */
@@ -160,13 +167,8 @@ public class BasicDataOperationUsingSet {
         System.out.println("Кiлькiсть елементiв в масивi: " + longArray.length);
         System.out.println("Кiлькiсть елементiв в LinkedHashSet: " + longSet.size());
 
-        boolean allElementsPresent = true;
-        for (long longElement : longArray) {
-            if (!longSet.contains(longElement)) {
-                allElementsPresent = false;
-                break;
-            }
-        }
+        boolean allElementsPresent = Arrays.stream(longArray)
+                                            .allMatch(longSet::contains); // Перевіряємо, чи всі елементи масиву є в множині
 
         if (allElementsPresent) {
             System.out.println("Всi елементи масиву наявні в LinkedHashSet.");

@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Клас BasicDataOperationUsingList реалізує операції з колекціями типу ArrayList для даних long.
@@ -70,7 +71,11 @@ public class BasicDataOperationUsingList {
     void performArraySorting() {
         long timeStart = System.nanoTime();
 
-        Arrays.sort(longArray);
+        // Оновлений метод сортування з Stream API
+        longArray = Arrays.stream(longArray)
+                  .sorted()
+                  .toArray(Long[]::new); // Повертаємо відсортований масив
+
 
         PerformanceTracker.displayOperationTime(timeStart, "упорядкування масиву дати i часу");
     }
@@ -81,7 +86,13 @@ public class BasicDataOperationUsingList {
     void findInArray() {
         long timeStart = System.nanoTime();
 
-        int position = Arrays.binarySearch(this.longArray, longValueToSearch);
+        // Оновлений код для пошуку значення в масиві з Stream API
+        int position = Arrays.stream(longArray)
+                     .map(Arrays.asList(longArray)::indexOf)
+                     .filter(i -> longValueToSearch == longArray[i]) // Пошук за значенням
+                     .findFirst()
+                     .orElse(-1); // Якщо не знайдено, повертається -1
+
 
         PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в масивi дати i часу");
 
@@ -103,17 +114,16 @@ public class BasicDataOperationUsingList {
 
         long timeStart = System.nanoTime();
 
-        long minValue = longArray[0];
-        long maxValue = longArray[0];
+        // Оновлений код для пошуку мінімального значення з Stream API
+        long minValue = Arrays.stream(longArray)
+                      .min(Long::compareTo)
+                      .orElseThrow(null);
 
-        for (long currentlong : longArray) {
-            if (longValueToSearch < minValue) {
-                minValue = currentlong;
-            }
-            if (longValueToSearch > maxValue) {
-                maxValue = currentlong;
-            }
-        }
+        // Оновлений код для пошуку максимального значення з Stream API
+        long maxValue = Arrays.stream(longArray)
+                      .max(Long::compareTo)
+                      .orElseThrow(null);
+
 
         PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмальної i максимальної дати в масивi");
 
@@ -121,23 +131,24 @@ public class BasicDataOperationUsingList {
         System.out.println("Найбільше значення в масивi: " + maxValue);
     }
 
-    /**
-     * Шукає конкретне значення дати та часу в колекції ArrayList.
-     */
-    void findInList() {
-        long timeStart = System.nanoTime();
+// Оновлений метод пошуку значення в списку за допомогою Stream API
+void findInList() {
+    long timeStart = System.nanoTime();
 
-        int position = Collections.binarySearch(this.longList, longValueToSearch);
+    int position = longList.stream()
+                           .map(longList::indexOf)
+                           .filter(i -> longValueToSearch == longList.get(i)) // Пошук за значенням
+                           .findFirst()
+                           .orElse(-1);
 
-        PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в List дати i часу");        
+    PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в List дати i часу");
 
-        if (position >= 0) {
-            System.out.println("Елемент '" + longValueToSearch + "' знайдено в ArrayList за позицією: " + position);
-        } else {
-            System.out.println("Елемент '" + longValueToSearch + "' відсутній в ArrayList.");
-        }
+    if (position >= 0) {
+        System.out.println("Елемент '" + longValueToSearch + "' знайдено в ArrayList за позицією: " + position);
+    } else {
+        System.out.println("Елемент '" + longValueToSearch + "' відсутній в ArrayList.");
     }
-
+}
     /**
      * Визначає найменше і найбільше значення в колекції ArrayList з датами.
      */
@@ -162,11 +173,14 @@ public class BasicDataOperationUsingList {
      * Упорядковує колекцію List з об'єктами long за зростанням.
      * Відстежує та виводить час виконання операції сортування.
      */
+// Оновлений метод сортування списку за допомогою Stream API
     void sortList() {
         long timeStart = System.nanoTime();
 
-        Collections.sort(longList);
+    longList = longList.stream()
+                    .sorted()
+                    .collect(Collectors.toList());
 
-        PerformanceTracker.displayOperationTime(timeStart, "упорядкування ArrayList дати i часу");
+    PerformanceTracker.displayOperationTime(timeStart, "упорядкування ArrayList дати i часу");
     }
 }

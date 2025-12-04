@@ -102,32 +102,29 @@ public class BasicDataOperationUsingQueue {
         // відстежуємо час на визначення граничних значень
         long timeStart = System.nanoTime();
 
-        long minValue = longArray[0];
-        long maxValue = longArray[0];
+            Long minValue = longQueue.stream()
+                                                .min(Long::compareTo) // Пошук мінімального значення
+                                                .orElse(null);
 
-        for (long currentlong : longArray) {
-            if (longValueToSearch  < minValue) {
-                minValue = currentlong;
-            }
-            if (longValueToSearch  > maxValue) {
-                maxValue = currentlong;
-            }
+            Long maxValue = longQueue.stream()
+                                                .max(Long::compareTo) // Пошук максимального значення
+                                                .orElse(null);
+
+            PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмальної i максимальної дати в Queue");
+
+            System.out.println("Найменше значення в Queue: " + minValue);
+            System.out.println("Найбільше значення в Queue: " + maxValue);
         }
-
-        PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмальної i максимальної дати в масивi");
-
-        System.out.println("Найменше значення в масивi: " + minValue);
-        System.out.println("Найбільше значення в масивi: " + maxValue);
-    }
 
     /**
      * Здійснює пошук конкретного значення в черзі дати та часу.
      */
+// Оновлений метод пошуку значення в черзі за допомогою Stream API
     private void findInQueue() {
-        // вимірюємо час пошуку в черзі
         long timeStart = System.nanoTime();
 
-        boolean elementExists = this.longQueue.contains(longValueToSearch);
+        boolean elementExists = longQueue.stream()
+                                            .anyMatch(longValue -> longValue.equals(longValueToSearch)); // Пошук за значенням
 
         PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в Queue дати i часу");
 
@@ -137,8 +134,7 @@ public class BasicDataOperationUsingQueue {
             System.out.println("Елемент '" + longValueToSearch + "' відсутній в Queue.");
         }
     }
-
-    /**
+        /**
      * Визначає найменше та найбільше значення в черзі long.
      */
     private void locateMinMaxInQueue() {
