@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 /**
  * Клас BasicDataOperationUsingMap реалізує операції з колекціями типу Map для зберігання пар ключ-значення.
@@ -32,21 +33,6 @@ public class BasicDataOperationUsingMap {
     private Hashtable<Sheep, String> hashtable;
     private HashMap<Sheep, String> hashMap;
 
-    /**
-     * Компаратор для сортування Map.Entry за значеннями String.
-     * Використовує метод String.compareTo() для порівняння імен власників.
-     */
-    static class OwnerValueComparator implements Comparator<Map.Entry<Sheep, String>> {
-        @Override
-        public int compare(Map.Entry<Sheep, String> e1, Map.Entry<Sheep, String> e2) {
-            String v1 = e1.getValue();
-            String v2 = e2.getValue();
-            if (v1 == null && v2 == null) return 0;
-            if (v1 == null) return -1;
-            if (v2 == null) return 1;
-            return v1.compareTo(v2);
-        }
-    }
 
     /**
      * Внутрішній клас Sheep для зберігання інформації про домашню тварину.
@@ -260,9 +246,9 @@ public class BasicDataOperationUsingMap {
         System.out.println("\n=== Пари ключ-значення в Hashtable ===");
         long timeStart = System.nanoTime();
 
-        for (Map.Entry<Sheep, String> entry : hashtable.entrySet()) {
-            System.out.println("  " + entry.getKey() + " -> " + entry.getValue());
-        }
+        hashtable.entrySet().forEach(entry ->
+            System.out.println("  " + entry.getKey() + " -> " + entry.getValue())
+        );
 
         PerformanceTracker.displayOperationTime(timeStart, "виведення пари ключ-значення в Hashtable");
     }
@@ -275,18 +261,15 @@ public class BasicDataOperationUsingMap {
     private void sortHashtable() {
         long timeStart = System.nanoTime();
 
-        // Створюємо список ключів і сортуємо за природним порядком Sheep
-        List<Sheep> sortedKeys = new ArrayList<>(hashtable.keySet());
-        Collections.sort(sortedKeys);
-        
-        // Створюємо нову Hashtable з відсортованими ключами
-        Hashtable<Sheep, String> sortedHashtable = new Hashtable<>();
-        for (Sheep key : sortedKeys) {
-            sortedHashtable.put(key, hashtable.get(key));
-        }
-        
-        // Перезаписуємо оригінальну hashtable
-        hashtable = sortedHashtable;
+        hashtable = hashtable.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        Hashtable::new
+                ));
+
 
         PerformanceTracker.displayOperationTime(timeStart, "сортування Hashtable за ключами");
     }
@@ -308,34 +291,33 @@ public class BasicDataOperationUsingMap {
         } else {
             System.out.println("Елемент з ключем '" + KEY_TO_SEARCH_AND_DELETE + "' відсутній в Hashtable.");
         }
-    }
 
+
+        PerformanceTracker.displayOperationTime(timeStart, "пошук за ключем в Hashtable");
+
+        if (found) {
+            String value = hashtable.get(KEY_TO_SEARCH_AND_DELETE);
+            System.out.println("Елемент з ключем '" + KEY_TO_SEARCH_AND_DELETE + "' знайдено. Власник: " + value);
+        } else {
+            System.out.println("Елемент з ключем '" + KEY_TO_SEARCH_AND_DELETE + "' відсутній в Hashtable.");
+        }
+    }
     /**
      * Здійснює пошук елемента за значенням в Hashtable.
-     * Сортує список Map.Entry за значеннями та використовує бінарний пошук.
+     * Використовує Stream API для фільтрування та пошуку елемента.
      */
     void findByValueInHashtable() {
         long timeStart = System.nanoTime();
 
-        // Створюємо список Entry та сортуємо за значеннями
-        List<Map.Entry<Sheep, String>> entries = new ArrayList<>(hashtable.entrySet());
-        OwnerValueComparator comparator = new OwnerValueComparator();
-        Collections.sort(entries, comparator);
+        // Пошук за значенням використовуючи Stream API
+        var foundEntry = hashtable.entrySet().stream()
+                .filter(entry -> entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE))
+                .findFirst();
 
-        // Створюємо тимчасовий Entry для пошуку
-        Map.Entry<Sheep, String> searchEntry = new Map.Entry<Sheep, String>() {
-            public Sheep getKey() { return null; }
-            public String getValue() { return VALUE_TO_SEARCH_AND_DELETE; }
-            public String setValue(String value) { return null; }
-        };
+        PerformanceTracker.displayOperationTime(timeStart, "пошук за значенням в Hashtable");
 
-        int position = Collections.binarySearch(entries, searchEntry, comparator);
-
-        PerformanceTracker.displayOperationTime(timeStart, "бінарний пошук за значенням в Hashtable");
-
-        if (position >= 0) {
-            Map.Entry<Sheep, String> foundEntry = entries.get(position);
-            System.out.println("Власника '" + VALUE_TO_SEARCH_AND_DELETE + "' знайдено. Sheep: " + foundEntry.getKey());
+        if (foundEntry.isPresent()) {
+            System.out.println("Власника '" + VALUE_TO_SEARCH_AND_DELETE + "' знайдено. Sheep: " + foundEntry.get().getKey());
         } else {
             System.out.println("Власник '" + VALUE_TO_SEARCH_AND_DELETE + "' відсутній в Hashtable.");
         }
@@ -377,16 +359,12 @@ public class BasicDataOperationUsingMap {
     void removeByValueFromHashtable() {
         long timeStart = System.nanoTime();
 
-        List<Sheep> keysToRemove = new ArrayList<>();
-        for (Map.Entry<Sheep, String> entry : hashtable.entrySet()) {
-            if (entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE)) {
-                keysToRemove.add(entry.getKey());
-            }
-        }
+        List<Sheep> keysToRemove = hashtable.entrySet().stream()
+                .filter(entry -> entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
         
-        for (Sheep key : keysToRemove) {
-            hashtable.remove(key);
-        }
+        keysToRemove.forEach(hashtable::remove);
 
         PerformanceTracker.displayOperationTime(timeStart, "видалення за значенням з Hashtable");
 
@@ -403,9 +381,9 @@ public class BasicDataOperationUsingMap {
         System.out.println("\n=== Пари ключ-значення в HashMap ===");
 
         long timeStart = System.nanoTime();
-        for (Map.Entry<Sheep, String> entry : hashMap.entrySet()) {
-            System.out.println("  " + entry.getKey() + " -> " + entry.getValue());
-        }
+        hashMap.entrySet().forEach(entry ->
+            System.out.println("  " + entry.getKey() + " -> " + entry.getValue())
+        );
 
         PerformanceTracker.displayOperationTime(timeStart, "виведення пар ключ-значення в HashMap");
     }
@@ -433,17 +411,15 @@ public class BasicDataOperationUsingMap {
         long timeStart = System.nanoTime();
 
         // Створюємо список ключів і сортуємо за природним порядком Sheep
-        List<Sheep> sortedKeys = new ArrayList<>(hashMap.keySet());
-        Collections.sort(sortedKeys);
-        
-        // Створюємо нову Hashtable з відсортованими ключами
-        HashMap<Sheep, String> sortedHashMap = new HashMap<>();
-        for (Sheep key : sortedKeys) {
-            sortedHashMap.put(key, hashMap.get(key));
-        }
-        
-        // Перезаписуємо оригінальну hashtable
-        hashMap = sortedHashMap;
+        hashMap = hashMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        HashMap::new
+                ));
+
 
 
         PerformanceTracker.displayOperationTime(timeStart, "сортування HashMap за ключами");
@@ -456,25 +432,15 @@ public class BasicDataOperationUsingMap {
     void findByValueInHashMap() {
         long timeStart = System.nanoTime();
 
-        // Створюємо список Entry та сортуємо за значеннями
-        List<Map.Entry<Sheep, String>> entries = new ArrayList<>(hashMap.entrySet());
-        OwnerValueComparator comparator = new OwnerValueComparator();
-        Collections.sort(entries, comparator);
+        // Пошук за значенням використовуючи Stream API
+        var foundEntry = hashMap.entrySet().stream()
+                .filter(entry -> entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE))
+                .findFirst();
 
-        // Створюємо тимчасовий Entry для пошуку
-        Map.Entry<Sheep, String> searchEntry = new Map.Entry<Sheep, String>() {
-            public Sheep getKey() { return null; }
-            public String getValue() { return VALUE_TO_SEARCH_AND_DELETE; }
-            public String setValue(String value) { return null; }
-        };
+        PerformanceTracker.displayOperationTime(timeStart, "пошук за значенням в HashMap");
 
-        int position = Collections.binarySearch(entries, searchEntry, comparator);
-
-        PerformanceTracker.displayOperationTime(timeStart, "бінарний пошук за значенням в HashMap");
-
-        if (position >= 0) {
-            Map.Entry<Sheep, String> foundEntry = entries.get(position);
-            System.out.println("Власника '" + VALUE_TO_SEARCH_AND_DELETE + "' знайдено. Sheep: " + foundEntry.getKey());
+        if (foundEntry.isPresent()) {
+            System.out.println("Власника '" + VALUE_TO_SEARCH_AND_DELETE + "' знайдено. Sheep: " + foundEntry.get().getKey());
         } else {
             System.out.println("Власник '" + VALUE_TO_SEARCH_AND_DELETE + "' відсутній в HashMap.");
         }
@@ -516,16 +482,12 @@ public class BasicDataOperationUsingMap {
     void removeByValueFromHashMap() {
         long timeStart = System.nanoTime();
 
-        List<Sheep> keysToRemove = new ArrayList<>();
-        for (Map.Entry<Sheep, String> entry : hashMap.entrySet()) {
-            if (entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE)) {
-                keysToRemove.add(entry.getKey());
-            }
-        }
+        List<Sheep> keysToRemove = hashMap.entrySet().stream()
+                .filter(entry -> entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
         
-        for (Sheep key : keysToRemove) {
-            hashMap.remove(key);
-        }
+        keysToRemove.forEach(hashMap::remove);
 
         PerformanceTracker.displayOperationTime(timeStart, "видалення за значенням з HashMap");
 

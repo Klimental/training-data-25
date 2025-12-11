@@ -1,0 +1,122 @@
+========= Операції з Hashtable =========
+Початковий розмір Hashtable: 10
+
+========= Тривалість операції 'пошук за ключем в Hashtable': 438075 нс =========
+Елемент з ключем 'Sheep{nickname='Кудря', woolLength='22.3', hashCode=-893206521}' знайдено. Власник: Петро
+
+========= Тривалість операції 'пошук за ключем в Hashtable': 88181016 нс =========
+Елемент з ключем 'Sheep{nickname='Кудря', woolLength='22.3', hashCode=-893206521}' знайдено. Власник: Петро
+
+========= Тривалість операції 'пошук за значенням в Hashtable': 7210932 нс =========
+Власника 'Андрій' знайдено. Sheep: Sheep{nickname='Пухна', woolLength='18.9', hashCode=1823254124}
+
+=== Пари ключ-значення в Hashtable ===
+  Sheep{nickname='Вовна', woolLength='25.5', hashCode=1880329671} -> Дарина
+  Sheep{nickname='Рунко', woolLength='23.6', hashCode=565662341} -> Олена
+  Sheep{nickname='Барашек', woolLength='19.8', hashCode=-111400029} -> Галина
+  Sheep{nickname='Сніжинка', woolLength='15.4', hashCode=-871802870} -> Марія
+  Sheep{nickname='Пухна', woolLength='18.9', hashCode=1823254124} -> Андрій
+  Sheep{nickname='Бяша', woolLength='28.7', hashCode=-1369240326} -> Андрій
+  Sheep{nickname='Овечка', woolLength='20.1', hashCode=194331719} -> Галина
+  Sheep{nickname='Пухна', woolLength='27.2', hashCode=-1184881044} -> Іван
+  Sheep{nickname='Кудря', woolLength='22.3', hashCode=-893206521} -> Петро
+  Sheep{nickname='Кудря', woolLength='26.4', hashCode=1680097286} -> Михайло
+
+========= Тривалість операції 'виведення пари ключ-значення в Hashtable': 2007513 нс =========
+
+========= Тривалість операції 'сортування Hashtable за ключами': 7526219 нс =========
+
+=== Пари ключ-значення в Hashtable ===
+  Sheep{nickname='Вовна', woolLength='25.5', hashCode=1880329671} -> Дарина
+  Sheep{nickname='Рунко', woolLength='23.6', hashCode=565662341} -> Олена
+  Sheep{nickname='Барашек', woolLength='19.8', hashCode=-111400029} -> Галина
+  Sheep{nickname='Сніжинка', woolLength='15.4', hashCode=-871802870} -> Марія
+  Sheep{nickname='Пухна', woolLength='18.9', hashCode=1823254124} -> Андрій
+  Sheep{nickname='Бяша', woolLength='28.7', hashCode=-1369240326} -> Андрій
+  Sheep{nickname='Овечка', woolLength='20.1', hashCode=194331719} -> Галина
+  Sheep{nickname='Кудря', woolLength='22.3', hashCode=-893206521} -> Петро
+  Sheep{nickname='Пухна', woolLength='27.2', hashCode=-1184881044} -> Іван
+  Sheep{nickname='Кудря', woolLength='26.4', hashCode=1680097286} -> Михайло
+
+========= Тривалість операції 'виведення пари ключ-значення в Hashtable': 1342279 нс =========
+
+========= Тривалість операції 'пошук за ключем в Hashtable': 5179 нс =========
+Елемент з ключем 'Sheep{nickname='Кудря', woolLength='22.3', hashCode=-893206521}' знайдено. Власник: Петро
+
+========= Тривалість операції 'пошук за ключем в Hashtable': 326292 нс =========
+Елемент з ключем 'Sheep{nickname='Кудря', woolLength='22.3', hashCode=-893206521}' знайдено. Власник: Петро
+
+========= Тривалість операції 'пошук за значенням в Hashtable': 55158 нс =========
+Власника 'Андрій' знайдено. Sheep: Sheep{nickname='Пухна', woolLength='18.9', hashCode=1823254124}
+
+========= Тривалість операції 'додавання запису до Hashtable': 17723 нс =========
+Додано новий запис: Sheep='Sheep{nickname='М'ята', woolLength='24.8', hashCode=-1807112977}', власник='Ірина'
+
+========= Тривалість операції 'видалення за ключем з Hashtable': 16653 нс =========
+Видалено запис з ключем 'Sheep{nickname='Кудря', woolLength='22.3', hashCode=-893206521}'. Власник був: Петро
+
+========= Тривалість операції 'видалення за значенням з Hashtable': 3269976 нс =========
+Видалено 2 записів з власником 'Андрій'
+Кінцевий розмір Hashtable: 8
+
+
+========= Операції з HashMap =========
+Початковий розмір HashMap: 10
+
+========= Тривалість операції 'пошук за ключем в HashMap': 25168 нс =========
+Елемент з ключем 'Sheep{nickname='Кудря', woolLength='22.3', hashCode=-893206521}' знайдено. Власник: Петро
+
+========= Тривалість операції 'пошук за значенням в HashMap': 503221 нс =========
+Власника 'Андрій' знайдено. Sheep: Sheep{nickname='Пухна', woolLength='18.9', hashCode=1823254124}
+
+========= Тривалість операції 'пошук за ключем в HashMap': 5182 нс =========
+Елемент з ключем 'Sheep{nickname='Кудря', woolLength='22.3', hashCode=-893206521}' знайдено. Власник: Петро
+
+========= Тривалість операції 'пошук за значенням в HashMap': 28808 нс =========
+Власника 'Андрій' знайдено. Sheep: Sheep{nickname='Пухна', woolLength='18.9', hashCode=1823254124}
+
+=== Пари ключ-значення в HashMap ===
+  Sheep{nickname='Пухна', woolLength='18.9', hashCode=1823254124} -> Андрій
+  Sheep{nickname='Овечка', woolLength='20.1', hashCode=194331719} -> Галина
+  Sheep{nickname='Кудря', woolLength='26.4', hashCode=1680097286} -> Михайло
+  Sheep{nickname='Рунко', woolLength='23.6', hashCode=565662341} -> Олена
+  Sheep{nickname='Сніжинка', woolLength='15.4', hashCode=-871802870} -> Марія
+  Sheep{nickname='Вовна', woolLength='25.5', hashCode=1880329671} -> Дарина
+  Sheep{nickname='Кудря', woolLength='22.3', hashCode=-893206521} -> Петро
+  Sheep{nickname='Бяша', woolLength='28.7', hashCode=-1369240326} -> Андрій
+  Sheep{nickname='Пухна', woolLength='27.2', hashCode=-1184881044} -> Іван
+  Sheep{nickname='Барашек', woolLength='19.8', hashCode=-111400029} -> Галина
+
+========= Тривалість операції 'виведення пар ключ-значення в HashMap': 3078831 нс =========
+
+========= Тривалість операції 'сортування HashMap за ключами': 928863 нс =========
+
+=== Пари ключ-значення в HashMap ===
+  Sheep{nickname='Пухна', woolLength='18.9', hashCode=1823254124} -> Андрій
+  Sheep{nickname='Кудря', woolLength='26.4', hashCode=1680097286} -> Михайло
+  Sheep{nickname='Овечка', woolLength='20.1', hashCode=194331719} -> Галина
+  Sheep{nickname='Рунко', woolLength='23.6', hashCode=565662341} -> Олена
+  Sheep{nickname='Сніжинка', woolLength='15.4', hashCode=-871802870} -> Марія
+  Sheep{nickname='Вовна', woolLength='25.5', hashCode=1880329671} -> Дарина
+  Sheep{nickname='Кудря', woolLength='22.3', hashCode=-893206521} -> Петро
+  Sheep{nickname='Бяша', woolLength='28.7', hashCode=-1369240326} -> Андрій
+  Sheep{nickname='Пухна', woolLength='27.2', hashCode=-1184881044} -> Іван
+  Sheep{nickname='Барашек', woolLength='19.8', hashCode=-111400029} -> Галина
+
+========= Тривалість операції 'виведення пар ключ-значення в HashMap': 1172350 нс =========
+
+========= Тривалість операції 'пошук за ключем в HashMap': 5921 нс =========
+Елемент з ключем 'Sheep{nickname='Кудря', woolLength='22.3', hashCode=-893206521}' знайдено. Власник: Петро
+
+========= Тривалість операції 'пошук за значенням в HashMap': 23617 нс =========
+Власника 'Андрій' знайдено. Sheep: Sheep{nickname='Пухна', woolLength='18.9', hashCode=1823254124}
+
+========= Тривалість операції 'додавання запису до HashMap': 11873 нс =========
+Додано новий запис: Sheep='Sheep{nickname='М'ята', woolLength='24.8', hashCode=-1807112977}', власник='Ірина'
+
+========= Тривалість операції 'видалення за ключем з HashMap': 18387 нс =========
+Видалено запис з ключем 'Sheep{nickname='Кудря', woolLength='22.3', hashCode=-893206521}'. Власник був: Петро
+
+========= Тривалість операції 'видалення за значенням з HashMap': 772848 нс =========
+Видалено 2 записів з власником 'Андрій'
+Кінцевий розмір HashMap: 8
