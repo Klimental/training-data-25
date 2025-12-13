@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 /**
  * Клас BasicDataOperationUsingMap реалізує операції з колекціями типу Map для зберігання пар ключ-значення.
@@ -22,8 +23,8 @@ import java.util.HashMap;
  * </ul>
  */
 public class BasicDataOperationUsingMap {
-    private final Sheep KEY_TO_SEARCH_AND_DELETE = new Sheep("Кудря", 22.3);
-    private final Sheep KEY_TO_ADD = new Sheep("М'ята", 24.8);
+    private final Sheep KEY_TO_SEARCH_AND_DELETE = new Sheep("Кудря", "Овеча");
+    private final Sheep KEY_TO_ADD = new Sheep("М'ята", "Овеча");
 
     private final String VALUE_TO_SEARCH_AND_DELETE = "Андрій";
     private final String VALUE_TO_ADD = "Ірина";
@@ -49,137 +50,21 @@ public class BasicDataOperationUsingMap {
     }
 
     /**
-     * Внутрішній клас Sheep для зберігання інформації про домашню тварину.
+     * Record для опису домашної тварини.
+     * Record автоматично створює конструктор, геттери, equals(), hashCode() та toString().
      * 
-     * Реалізує Comparable<Sheep> для визначення природного порядку сортування.
-     * Природний порядок: спочатку за кличкою (nickname) за зростанням, потім за видом (woolLength) за спаданням.
+     * Природний порядок: спочатку за кличкою (nickname) за зростанням, потім за видом (species) за спаданням.
+     * @param nickname кличка тварини
+     * @param species вид тварини
      */
-    public static class Sheep implements Comparable<Sheep> {
-        private final String nickname;
-        private final Double woolLength;
+    public record Sheep(String nickname, String species) {}
 
-        public Sheep(String nickname) {
-            this.nickname = nickname;
-            this.woolLength = null;
-        }
-
-        public Sheep(String nickname, Double woolLength) {
-            this.nickname = nickname;
-            this.woolLength = woolLength;
-        }
-
-        public String getNickname() { 
-            return nickname; 
-        }
-
-        public Double getWoolLength() {
-            return woolLength;
-        }
-
-        /**
-         * Порівнює цей об'єкт Sheep з іншим для визначення порядку сортування.
-         * Природний порядок: спочатку за кличкою (nickname) за зростанням, потім за видом (woolLength) за спаданням.
-         * 
-         * @param other Sheep об'єкт для порівняння
-         * @return негативне число, якщо цей Sheep < other; 
-         *         0, якщо цей Sheep == other; 
-         *         позитивне число, якщо цей Sheep > other
-         * 
-         * Критерій порівняння: поля nickname (кличка) за зростанням та woolLength (вид) за спаданням.
-         * 
-         * Цей метод використовується:
-         * - HashMap для автоматичного сортування ключів Sheep за nickname (зростання), потім за woolLength (спадання)
-         * - Collections.sort() для сортування Map.Entry за ключами Sheep
-         * - Collections.binarySearch() для пошуку в відсортованих колекціях
-         */
-        @Override
-        public int compareTo(Sheep other) {
-            if (other == null) return 1;
-            
-            // Спочатку порівнюємо за кличкою
-            int nicknameComparison = 0;
-            if (this.nickname == null && other.nickname == null) {
-                nicknameComparison = 0;
-            } else if (this.nickname == null) {
-                nicknameComparison = -1;
-            } else if (other.nickname == null) {
-                nicknameComparison = 1;
-            } else {
-                nicknameComparison = other.nickname.compareTo(this.nickname);
-            }
-            
-            // Якщо клички різні, повертаємо результат
-            if (nicknameComparison != 0) {
-                return nicknameComparison;
-            }
-            
-            // Якщо клички однакові, порівнюємо за розміром вовни (за спаданням - інвертуємо результат)
-            if (this.woolLength == null && other.woolLength == null) return 0;
-            if (this.woolLength == null) return 1;  // null йде в кінець при спаданні
-            if (other.woolLength == null) return -1;
-            return other.woolLength.compareTo(this.woolLength);  // Інвертоване порівняння для спадання
-        }
-        /**
-         * Перевіряє рівність цього Sheep з іншим об'єктом.
-         * Два Sheep вважаються рівними, якщо їх клички (nickname) та види (woolLength) однакові.
-         * 
-         * @param obj об'єкт для порівняння
-         * @return true, якщо об'єкти рівні; false в іншому випадку
-         * 
-         * Критерій рівності: поля nickname (кличка) та woolLength (довжина вовни).
-         * 
-         * Важливо: метод узгоджений з compareTo() - якщо equals() повертає true,
-         * то compareTo() повертає 0, оскільки обидва методи порівнюють за nickname та woolLength.
-         */
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null || getClass() != obj.getClass()) return false;
-            Sheep sheep = (Sheep) obj;
-            
-            boolean nicknameEquals = nickname != null ? nickname.equals(sheep.nickname) : sheep.nickname == null;
-            boolean woolLengthEquals = woolLength != null ? woolLength.equals(sheep.woolLength) : sheep.woolLength == null;
-            
-            return nicknameEquals && woolLengthEquals;
-        }
-
-        /**
-         * Повертає хеш-код для цього Sheep.
-         * 
-         * @return хеш-код, обчислений на основі nickname та woolLength
-         * 
-         * Базується на полях nickname та woolLength для узгодженості з equals().
-         * 
-         * Важливо: узгоджений з equals() - якщо два Sheep рівні за equals()
-         * (мають однакові nickname та woolLength), вони матимуть однаковий hashCode().
-         */
-        @Override
-        public int hashCode() {
-            // Початкове значення: хеш-код поля nickname (або 0, якщо nickname == null)
-            int result = nickname != null ? nickname.hashCode() : 0;
-            
-            // Комбінуємо хеш-коди полів за формулою: result = 31 * result + hashCode(поле)
-            // Множник 31 - просте число, яке дає хороше розподілення хеш-кодів
-            // і оптимізується JVM як (result << 5) - result
-            // Додаємо хеш-код виду (або 0, якщо woolLength == null) до загального результату
-            result = 31 * result + (woolLength != null ? woolLength.hashCode() : 0);
-            
-            return result;
-        }
-
-        /**
-         * Повертає строкове представлення Sheep.
-         * 
-         * @return кличка тварини (nickname), Довжина вовни (woolLength) та hashCode
-         */
-        @Override
-        public String toString() {
-            if (woolLength != null) {
-                return "Sheep{nickname='" + nickname + "', woolLength='" + woolLength + "', hashCode=" + hashCode() + "}";
-            }
-            return "Sheep{nickname='" + nickname + "', hashCode=" + hashCode() + "}";
-        }
-    }
+    /**
+     * Компаратор для порівняння об'єктів Sheep.
+     * Сортування: спочатку за кличкою (за зростанням), потім за видом (за спаданням).
+     */
+    private static final Comparator<Sheep> SHEEP_COMPARATOR = 
+        Comparator.comparing(Sheep::nickname).thenComparing(Sheep::species, Comparator.reverseOrder());
 
     /**
      * Конструктор, який ініціалізує об'єкт з готовими даними.
@@ -268,15 +153,15 @@ public class BasicDataOperationUsingMap {
 
     /**
      * Сортує Hashtable за ключами.
-     * Використовує Collections.sort() з природним порядком Sheep (Sheep.compareTo()).
+     * Використовує Collections.sort() з компаратором SHEEP_COMPARATOR.
      * Перезаписує hashtable відсортованими даними.
      */
     private void sortHashtable() {
         long timeStart = System.nanoTime();
 
-        // Створюємо список ключів і сортуємо за природним порядком Sheep
+        // Створюємо список ключів і сортуємо за компаратором SHEEP_COMPARATOR
         List<Sheep> sortedKeys = new ArrayList<>(hashtable.keySet());
-        Collections.sort(sortedKeys);
+        sortedKeys.sort(SHEEP_COMPARATOR);
         
         // Створюємо нову Hashtable з відсортованими ключами
         Hashtable<Sheep, String> sortedHashtable = new Hashtable<>();
@@ -396,7 +281,7 @@ public class BasicDataOperationUsingMap {
 
     /**
      * Виводить вміст HashMap.
-     * HashMap автоматично відсортована за ключами (Sheep nickname за зростанням, woolLength за спаданням).
+     * HashMap автоматично відсортована за ключами (Sheep nickname за зростанням, species за спаданням).
      */
     private void printHashMap() {
         System.out.println("\n=== Пари ключ-значення в HashMap ===");
@@ -409,24 +294,20 @@ public class BasicDataOperationUsingMap {
         PerformanceTracker.displayOperationTime(timeStart, "виведення пар ключ-значення в HashMap");
     }
 
-        private void sortHashMap() {
+    private void sortHashMap() {
         long timeStart = System.nanoTime();
 
-        // Створюємо список ключів і сортуємо за природним порядком Sheep
-        List<Sheep> sortedKeys = new ArrayList<>(hashMap.keySet());
-        Collections.sort(sortedKeys);
-        
-        // Створюємо нову Hashtable з відсортованими ключами
-        HashMap<Sheep, String> sortedHashMap = new HashMap<>();
-        for (Sheep key : sortedKeys) {
-            sortedHashMap.put(key, hashMap.get(key));
-        }
-        
-        // Перезаписуємо оригінальну hashtable
-        hashMap = sortedHashMap;
+        // Створюємо список записів та сортуємо за компаратором SHEEP_COMPARATOR
+        hashMap = hashMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey(SHEEP_COMPARATOR))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        HashMap::new
+                ));
 
-
-        PerformanceTracker.displayOperationTime(timeStart, "сортування Hashtable за ключами");
+        PerformanceTracker.displayOperationTime(timeStart, "сортування HashMap за ключами");
     }
 
 
@@ -537,30 +418,29 @@ public class BasicDataOperationUsingMap {
      */
 public static void main(String[] args) {
     Hashtable<Sheep, String> hashtable = new Hashtable<>();
-    hashtable.put(new Sheep("Вовна", 25.5), "Дарина");
-    hashtable.put(new Sheep("Кудря", 22.3), "Петро");
-    hashtable.put(new Sheep("Бяша", 28.7), "Андрій");
-    hashtable.put(new Sheep("Овечка", 20.1), "Галина");
-    hashtable.put(new Sheep("Кудря", 26.4), "Михайло");
-    hashtable.put(new Sheep("Пухна", 18.9), "Андрій");
-    hashtable.put(new Sheep("Рунко", 23.6), "Олена");
-    hashtable.put(new Sheep("Барашек", 19.8), "Галина");
-    hashtable.put(new Sheep("Пухна", 27.2), "Іван");
-    hashtable.put(new Sheep("Сніжинка", 15.4), "Марія");
+    hashtable.put(new Sheep("Вовна", "Овеча"), "Дарина");
+    hashtable.put(new Sheep("Кудря", "Овеча"), "Петро");
+    hashtable.put(new Sheep("Бяша", "Козел"), "Андрій");
+    hashtable.put(new Sheep("Овечка", "Овеча"), "Галина");
+    hashtable.put(new Sheep("Кудря", "Козел"), "Михайло");
+    hashtable.put(new Sheep("Пухна", "Овеча"), "Андрій");
+    hashtable.put(new Sheep("Рунко", "Козел"), "Олена");
+    hashtable.put(new Sheep("Барашек", "Овеча"), "Галина");
+    hashtable.put(new Sheep("Пухна", "Козел"), "Іван");
+    hashtable.put(new Sheep("Сніжинка", "Овеча"), "Марія");
 
     HashMap<Sheep, String> hashMap = new HashMap<Sheep, String>() {{
-        put(new Sheep("Вовна", 25.5), "Дарина");
-        put(new Sheep("Кудря", 22.3), "Петро");
-        put(new Sheep("Бяша", 28.7), "Андрій");
-        put(new Sheep("Овечка", 20.1), "Галина");
-        put(new Sheep("Кудря", 26.4), "Михайло");
-        put(new Sheep("Пухна", 18.9), "Андрій");
-        put(new Sheep("Рунко", 23.6), "Олена");
-        put(new Sheep("Барашек", 19.8), "Галина");
-        put(new Sheep("Пухна", 27.2), "Іван");
-        put(new Sheep("Сніжинка", 15.4), "Марія");
+        put(new Sheep("Вовна", "Овеча"), "Дарина");
+        put(new Sheep("Кудря", "Овеча"), "Петро");
+        put(new Sheep("Бяша", "Козел"), "Андрій");
+        put(new Sheep("Овечка", "Овеча"), "Галина");
+        put(new Sheep("Кудря", "Козел"), "Михайло");
+        put(new Sheep("Пухна", "Овеча"), "Андрій");
+        put(new Sheep("Рунко", "Козел"), "Олена");
+        put(new Sheep("Барашек", "Овеча"), "Галина");
+        put(new Sheep("Пухна", "Козел"), "Іван");
+        put(new Sheep("Сніжинка", "Овеча"), "Марія");
     }};
-
 
         // Створюємо об'єкт і виконуємо операції
         BasicDataOperationUsingMap operations = new BasicDataOperationUsingMap(hashtable, hashMap);
